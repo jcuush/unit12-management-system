@@ -1,0 +1,23 @@
+{
+  "name": "unit12-management-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcuush/unit12-management-system.git"
+  },
+  "author": "Jack Cushing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jcuush/unit12-management-system/issues"
+  },
+  "homepage": "https://github.com/jcuush/unit12-management-system#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
