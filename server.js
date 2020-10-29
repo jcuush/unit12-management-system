@@ -1,18 +1,64 @@
-var express = require("express");
+var mysql = require("mysql");
+var inquirer = require("inquirer");
 
-var app = express();
+var connection = mysql.createConnection({
+  host: "localhost",
 
-var PORT = process.env.PORT || 8080;
+  // Your port; if not 3306
+  port: 3306,
 
-app.use(express.urlencoded({extended:true}));
+  // Your username
+  user: "root",
 
-app.use(express.json());
+  // Your password
+  password: "Hotchkiss92",
+  database: "company_db"
+});
 
-app.use(express.static("public"));
+connection.connect(function(err) {
+  if (err) throw err;
+  console.log("Welcome");
+  init();
+});
 
-require("./routes/index")(app)
+function init() {
+    inquirer.prompt({
+        type:"list",
+        message:"What would you like to do to the company?",
+        name: "action",
+        choices: [
+            "View",
+            "Update",
+            "Add"
+        ]
+    }).then(function(answer) {
+        switch (answer.action) {
+            case "View":
+                viewCompany();
+                break;
+            
+            case "Update":
+                updateCompany();
+                break;
+
+            case "Add":
+                addCompany();
+                break;
+        }
+    })
+}
+
+function viewCompany(){
+
+}
+
+function updateCompany() {
+
+}
+
+function addCompany() {
+
+}
 
 
-app.listen(PORT, function() {
-    console.log("Listening on http://localhost:"+PORT);
-})
+
