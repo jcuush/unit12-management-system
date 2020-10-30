@@ -85,19 +85,22 @@ function updateEmployee() {
 
 
         let employeeArray = [];
-
+        let employeeFirst;
         for (let i = 0; i < result.length; i++) {
             employeeArray.push(`${result[i].first_name} ${result[i].last_name}`);
+            employeeFirst = result[i].first_name;
         }
+        
     let query2 =  `SELECT * FROM role`
-    connection.query(query2, function(err, result) {
+    connection.query(query2, function(err, res) {
         // console.log(err, result);
     
     
             let roleArray = [];
-    
-            for (let i = 0; i < result.length; i++) {
-                roleArray.push(result[i].title);
+            let updatedRole;
+            for (let i = 0; i < res.length; i++) {
+                roleArray.push(res[i].title);
+                updateRole = res[i].title;
             }
     
 
@@ -118,9 +121,16 @@ function updateEmployee() {
 
 ]).then(function(ans){
     console.log(ans);
+    let roleID;
+    for(let i =0; i < res.length; i++) {
+        if(res[i].name === ans.roleArray) {
+        roleID = res[i].id;
+    }
+}
 
-    let query = `UPDATE employee INNERJOIN role on employee.role_id = role.id SET role_id = ?`
-    connection.query(query,[ans.roleArray], function (err,res) {
+
+    let query = `UPDATE employee SET role_id = ? WHERE first_name = ?`
+    connection.query(query,[roleID, updatedRole, employeeFirst], function (err,res) {
         if (err) throw err;
         reRun();
     });
@@ -289,7 +299,7 @@ function addEmployee () {
     ]).then(function(ans){
         let roleID;
         for(let i = 0; i < result.length; i++) {
-            if(result[i].name === ans.employeeRole) {
+            if(result[i].title === ans.employeeRole) {
                 roleID = result[i].id;
             }
         }
