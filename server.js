@@ -56,7 +56,6 @@ function viewCompany(){
             "Departments",
             "Roles",
             "Employees",
-            "Entire Company"
         ]
     }).then(function(answer) {
         switch (answer.view) {
