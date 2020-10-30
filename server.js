@@ -20,7 +20,7 @@ connection.connect(function(err) {
   console.log("Welcome");
   init();
 });
-
+// starts inital prompt on what the user would like to do with the company. Depending on the response the respective function is called. 
 function init() {
     inquirer.prompt({
         type:"list",
@@ -46,7 +46,7 @@ function init() {
         }
     })
 }
-
+// function asks what part of the company they would like to view, selected answer will bring up information respective to what the user has chosen
 function viewCompany(){
     inquirer.prompt({
         type:"list",
@@ -77,7 +77,7 @@ function viewCompany(){
     })
 
 }
-
+// supposed to update employee role...not quite there yet
 function updateEmployee() {
     let query = `SELECT * FROM employee`
     connection.query(query, function(err, result) {
@@ -128,7 +128,7 @@ function updateEmployee() {
     });
 });
 }
-
+// if the user chose add in initial prompt this allows them to choose whether to add a department, employee or role
 function addCompany() {
     inquirer
     .prompt({
@@ -159,7 +159,7 @@ function addCompany() {
     })
 };
 
-
+// console logs a table of all the created departments.
 function viewDepartments() {
     let query = "SELECT * FROM department";
     connection.query(query, function(err,res) {
@@ -170,7 +170,7 @@ function viewDepartments() {
     
 
 }
-
+// console logs a table of all the roles
 function viewRoles() {
     let query = "SELECT * FROM role";
     connection.query(query, function(err,res) {
@@ -180,7 +180,7 @@ function viewRoles() {
     })
     
 }
-
+// console logs a table of all the employees
 function viewEmployees() {
     let query = "SELECT * FROM employee";
     connection.query(query, function(err,res) {
@@ -190,7 +190,7 @@ function viewEmployees() {
     })
    
 }
-
+// allows user to add a department to the company
 function addDepartment () {
     inquirer.prompt({
         type:"input",
@@ -205,7 +205,7 @@ function addDepartment () {
     });
    
 };
-
+// user can add new role to a department then decide on what the role is, the salary and what department it is for
 function addRole () {
     let query = `SELECT * FROM department`
     connection.query(query, function(err, result) {
@@ -254,7 +254,7 @@ function addRole () {
 });
 
 }
-
+// user adds a new employee entering their first name, last name and then chooses a role based on what is available at the company
 function addEmployee () {
     let query = `SELECT * FROM role`
     connection.query(query, function(err, result) {
@@ -303,7 +303,7 @@ function addEmployee () {
     
 
 }
-
+// allows server to stay open and let them continue to view/add/update company or ends connection if no is selected
 function reRun() {
     inquirer
     .prompt({
