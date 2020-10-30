@@ -27,22 +27,21 @@ function init() {
         message:"What would you like to do with company?",
         name: "action",
         choices: [
-            "View",
-            "Update",
-            "Add"
+            "View Departments, roles or employees",
+            "Add Departments, roles, or employees",
+            "Update Employee"
         ]
     }).then(function(answer) {
         switch (answer.action) {
-            case "View":
+            case "View Departments, roles or employees":
                 viewCompany();
                 break;
             
-            case "Update":
-                updateCompany();
-                break;
-
-            case "Add":
+            case "Add Departments, roles, or employees":
                 addCompany();
+                break;
+            case "Update Employee":
+                updateEmployee();
                 break;
         }
     })
@@ -72,17 +71,62 @@ function viewCompany(){
             case "Employees":
                 viewEmployees();
                 break;
-            
-            case "Entire Company":
-                viewEntireCompany();
-                break;
+            case "Exit":
+                connection.end();
         }
     })
 
 }
 
-function updateCompany() {
+function updateEmployee() {
+    let query = `SELECT * FROM employee`
+    connection.query(query, function(err, result) {
+    // console.log(err, result);
 
+
+        let employeeArray = [];
+
+        for (let i = 0; i < result.length; i++) {
+            employeeArray.push(`${result[i].first_name} ${result[i].last_name}`);
+        }
+    let query2 =  `SELECT * FROM role`
+    connection.query(query2, function(err, result) {
+        // console.log(err, result);
+    
+    
+            let roleArray = [];
+    
+            for (let i = 0; i < result.length; i++) {
+                roleArray.push(result[i].title);
+            }
+    
+
+    inquirer
+    .prompt([
+    {
+        type: "list",
+        message:"Which employee do you want to update",
+        name: "update",
+        choices: employeeArray
+    },
+    {
+        type: "list",
+        message: "What is the employee's new role",
+        name:"updateRole",
+        choices: roleArray
+    }
+
+]).then(function(ans){
+    console.log(ans);
+
+    let query = `UPDATE employee INNERJOIN role on employee.role_id = role.id SET role_id = ?`
+    connection.query(query,[ans.roleArray], function (err,res) {
+        if (err) throw err;
+        reRun();
+    });
+});
+    });
+});
 }
 
 function addCompany() {
@@ -121,7 +165,9 @@ function viewDepartments() {
     connection.query(query, function(err,res) {
         console.log("\n\n");
         console.table(res);
+        reRun();
     })
+    
 
 }
 
@@ -130,7 +176,9 @@ function viewRoles() {
     connection.query(query, function(err,res) {
         console.log("\n\n");
         console.table(res);  
+        reRun();
     })
+    
 }
 
 function viewEmployees() {
@@ -138,16 +186,9 @@ function viewEmployees() {
     connection.query(query, function(err,res) {
         console.log("\n\n");
         console.table(res);   
+        reRun();
     })
-}
-
-function viewEntireCompany () {
-    let query = `SELECT employee.id, first_name, last_name, title, salary, name, manager_id FROM employee JOIN role on role_id = role.id JOIN department ON department_id = department.id`
-    connection.query(query, function(err, result) {
-        if (err) throw err;
-        console.log("\n\n");
-        console.table(result);
-    })
+   
 }
 
 function addDepartment () {
@@ -159,9 +200,10 @@ function addDepartment () {
         let query = `INSERT INTO department (name) VALUES (?)`
         connection.query(query,[res.newDepartment], function (err,res) {
             console.log(err, res);
+            reRun();
         })
     });
-    
+   
 };
 
 function addRole () {
@@ -206,11 +248,11 @@ function addRole () {
         let query = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`
         connection.query(query,[ans.newRole, ans.newSalary, departmentID], function (err,res) {
             if (err) throw err;
-            
+            reRun();
         })
     });
 });
-    
+
 }
 
 function addEmployee () {
@@ -254,8 +296,30 @@ function addEmployee () {
         let query = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`
         connection.query(query,[ans.newFirst, ans.newLast, roleID], function (err,res) {
             if (err) throw err;
+            reRun();
         });
     });
     });
+    
 
+}
+
+function reRun() {
+    inquirer
+    .prompt({
+        type: "list",
+        message: "Would you like to do more with the company?",
+        name: "again",
+        choices: [
+            "yes",
+            "no"
+        ]
+    }).then(function(ans) {
+        if(ans.again === "yes"){
+            init();
+        }
+        else if(ans.again === "no"){
+            connection.end();
+        }
+    })
 }
